@@ -1,0 +1,1606 @@
+@{
+    ViewBag.Title = "CounselCompensationPlanningReports";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string sWebsiteURL = @ViewBag.sWebsiteURL;
+}
+
+
+<link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet" />
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js" integrity="sha256-lSjKY0/srUM9BE3dPm+c4fBo1dky2v27Gdjm2uoZaL0=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.2.0/js/bootstrap-datepicker.min.js"></script>
+
+<link rel="stylesheet" href="~/css/bundle.css" />
+
+<style>
+    /*.htitle {
+                    margin: 0px;
+                    padding: 5px;
+                    font-size: 16px;
+                }*/
+    .t-v-a {
+        vertical-align: middle;
+    }
+
+    .t-a-r {
+        text-align: right;
+    }
+
+    .t-a-c {
+        text-align: center;
+    }
+
+    .t-f-w {
+        font-weight: bold;
+    }
+
+    .table {
+        border-spacing: 0;
+    }
+
+    .table-bordered {
+        border: 1px solid #ddd;
+    }
+
+    .tblCounselCompensationPlanning-wrapper {
+        overflow: auto;
+        width: 100%;
+        border: 1px solid #ddd;
+    }
+
+    .tblCounselHistory-wrapper {
+        overflow: scroll;
+        width: 100%;
+        /*max-height: 555px;*/
+    }
+
+    .btnExcelImport {
+        float: right;
+    }
+
+    #tblCounselCompensationPlanning tbody tr td {
+        vertical-align: middle;
+    }
+
+    #tblCounselCompensationPlanning thead tr:first-child th {
+        min-width: 100px;
+        vertical-align: middle;
+        padding-right: 25px;
+        z-index: 1;
+    }
+
+    #tblCounselCompensationPlanning thead tr:nth-child(2) th {
+        top: 38px;
+        min-width: 100px;
+        padding-right: 25px;
+        vertical-align: middle;
+    }
+
+    .positionSticky {
+        position: sticky;
+        left: 0;
+        z-index: 1;
+        background: #fff;
+    }
+    /*Popup design related*/
+    .central {
+        text-align: center;
+        margin-top: 100px;
+    }
+
+    h2 {
+        font-size: 1.8em;
+        font-weight: bold;
+    }
+
+    .success-button {
+        background: none;
+        color: #000;
+        border-radius: 0px;
+        margin-left: 20px;
+        border: none;
+    }
+
+    .custom-form {
+        margin: 40px 0px;
+    }
+
+    .p {
+        font-size: .9em;
+        padding-top: 300px;
+        text-align: center;
+    }
+
+    .pop-btn {
+        display: flex;
+        margin: 30px 0px 20px 0px;
+    }
+
+        .pop-btn .save {
+            margin: 0px 5px 0px 0px
+        }
+
+        .pop-btn .cancle {
+            margin: 0px 0px 0px 10px
+        }
+
+    .pop-form .modal-dialog {
+        width: 32em;
+        margin: 30px auto;
+    }
+
+    .pop-form select {
+        color: #707070;
+        padding: 5px;
+        width: 12.5em;
+    }
+
+    .pop-form label {
+        color: #707070;
+    }
+
+    .trash button {
+        border: none;
+        color: #707070;
+        padding: 8px 16px;
+        border-radius: 5px;
+    }
+
+        .trash button:hover {
+            background: linear-gradient(rgba(0,0,0,.1),rgba(0,0,0,.1));
+        }
+
+    .pop-form h2 {
+        color: #707070;
+        margin: 0px;
+        font-size: 18px;
+    }
+
+    .pop-form .trash i {
+        font-size: 16px;
+    }
+
+    .pop-form .modal-header {
+        padding: 20px;
+        border-bottom: 1px solid #e5e5e5;
+    }
+
+        .pop-form .modal-header h2 {
+            text-align: left;
+        }
+
+    /* .pop-form .modal-header {
+                  border: none;
+                } */
+
+    .pop-form .about-body {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+    }
+
+    .pop-form .name {
+        width: 6em;
+    }
+
+    .pop-form .modal-open .modal {
+        background: #ccc !important;
+    }
+
+    .pop-form input {
+        border: solid 1px #707070;
+    }
+
+    .pop-form .modal-body {
+        position: relative;
+        padding: 15px;
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    textarea.form-control {
+        height: 34px;
+    }
+
+    .divPerformanceScore {
+        position: absolute;
+        border: 1px solid;
+        z-index: 111;
+        top: -30px;
+        right: 25px;
+        display: none;
+    }
+
+        .divPerformanceScore .tblPerformanceScore {
+            width: 99%;
+        }
+
+            .divPerformanceScore .tblPerformanceScore tr th {
+                background-color: #f4f7fc !important;
+            }
+
+    .divBonusCollections {
+        position: absolute;
+        border: 1px solid;
+        z-index: 111;
+        top: -30px;
+        right: 25px;
+        display: none;
+    }
+
+        .divBonusCollections .tblBonusCollections {
+            width: 99%;
+        }
+
+            .divBonusCollections .tblBonusCollections tr th {
+                background-color: #f4f7fc !important;
+            }
+
+
+    .divBillableHrs {
+        position: absolute;
+        border: 1px solid;
+        z-index: 111;
+        top: -30px;
+        right: 25px;
+        display: none;
+    }
+
+        .divBillableHrs .tblBillableHrs {
+            width: 99%;
+        }
+
+            .divBillableHrs .tblBillableHrs tr th {
+                background-color: #f4f7fc !important;
+            }
+
+    .form-control:disabled {
+        background-color: #eeeeee !important;
+    }
+
+    .tabParent {
+        white-space: nowrap;
+        overflow-x: auto;
+    }
+
+    #tblCounselCompensationPlanning {
+        border-top: none;
+    }
+
+        #tblCounselCompensationPlanning thead:first-child tr:first-child th {
+            border-top: 1px solid #ddd;
+        }
+
+    #tblCounselHistory thead:first-child tr:first-child th {
+        border-top: 1px solid #ddd;
+    }
+
+    .swal2-styled.swal2-confirm {
+        border: 1px solid #000 !important;
+        background-color: #181c32 !important;
+        border-color: #5d78ff !important;
+        color: #ffffff !important;
+        font-weight: normal;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        -ms-touch-action: manipulation;
+        touch-action: manipulation;
+        cursor: pointer;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        border-radius: 4px;
+    }
+
+        .swal2-styled.swal2-confirm:hover {
+            color: #fff !important;
+            background-color: #3758ff !important;
+            border-color: #2a4eff !important;
+        }
+
+    .swal2-styled.swal2-cancel {
+        border: 1px solid #000 !important;
+        background-color: #F4F7FC !important;
+        color: #000 !important;
+        display: inline-block;
+        font-weight: normal;
+        text-align: center;
+        white-space: nowrap;
+        vertical-align: middle;
+        -ms-touch-action: manipulation;
+        touch-action: manipulation;
+        cursor: pointer;
+        padding: 6px 12px;
+        font-size: 14px;
+        line-height: 1.42857143;
+        border-radius: 4px;
+    }
+
+        .swal2-styled.swal2-cancel:hover {
+            color: #fff !important;
+            background-color: #3758ff !important;
+            border-color: #2a4eff !important;
+        }
+
+    #tblCounselCompensationPlanning_wrapper {
+        padding-top: 5px;
+    }
+
+        #tblCounselCompensationPlanning_wrapper .dt-buttons {
+            display: inline;
+            float: right;
+        }
+
+            #tblCounselCompensationPlanning_wrapper .dt-buttons .buttons-excel {
+                margin: 0px;
+                margin-left: 10px
+            }
+
+    .ui-widget-shadow {
+        background: none;
+        padding: 0px;
+        opacity: 1;
+    }
+
+    .ui-tooltip-content {
+        background: #fff;
+        color: #000;
+        opacity: 1;
+        padding: 5px;
+        border: none;
+    }
+
+    .ui-widget-content {
+        -webkit-box-shadow: none;
+        box-shadow: none;
+        border: none;
+    }
+
+    #tblCounselCompensationPlanning th {
+        position: sticky;
+    }
+
+    .datepicker {
+        padding: 0px;
+    }
+
+    .datepicker {
+        width: 265px;
+        padding: 10px;
+    }
+
+        .datepicker.datepicker-orient-top {
+            margin-top: 8px;
+        }
+
+        .datepicker table {
+            width: 100%;
+        }
+
+        .datepicker td,
+        .datepicker th {
+            font-weight: regular;
+            width: 35px;
+            height: 35px;
+            border-radius: 3px;
+        }
+
+        .datepicker thead th {
+            color: #74788d;
+        }
+
+            .datepicker thead th.prev, .datepicker thead th.datepicker-switch, .datepicker thead th.next {
+                font-weight: 500;
+                color: #74788d;
+            }
+
+                .datepicker thead th.prev i, .datepicker thead th.datepicker-switch i, .datepicker thead th.next i {
+                    font-size: 1.2rem;
+                    color: #74788d;
+                }
+
+                    .datepicker thead th.prev i:before, .datepicker thead th.datepicker-switch i:before, .datepicker thead th.next i:before {
+                        line-height: 0;
+                        vertical-align: middle;
+                    }
+
+                .datepicker thead th.prev:hover, .datepicker thead th.datepicker-switch:hover, .datepicker thead th.next:hover {
+                    background: #f7f8fa !important;
+                }
+
+            .datepicker thead th.dow {
+                color: #595d6e;
+                font-weight: 500;
+            }
+
+        .datepicker tbody tr > td.day {
+            color: #595d6e;
+        }
+
+            .datepicker tbody tr > td.day:hover {
+                background: #ebedf2;
+                color: #595d6e;
+            }
+
+            .datepicker tbody tr > td.day.old {
+                color: #74788d;
+            }
+
+            .datepicker tbody tr > td.day.new {
+                color: #595d6e;
+            }
+
+            .datepicker tbody tr > td.day.selected, .datepicker tbody tr > td.day.selected:hover, .datepicker tbody tr > td.day.active, .datepicker tbody tr > td.day.active:hover {
+                background-image: -webkit-linear-gradient(top, #DB3536, #DB3536) !important;
+                color: #ffffff;
+            }
+
+            .datepicker tbody tr > td.day.today {
+                position: relative;
+                background: rgba(93, 120, 255, 0.7) !important;
+                color: #ffffff !important;
+            }
+
+                .datepicker tbody tr > td.day.today:before {
+                    content: '';
+                    display: inline-block;
+                    border: solid transparent;
+                    border-width: 0 0 7px 7px;
+                    border-bottom-color: #ffffff;
+                    border-top-color: #ebedf2;
+                    position: absolute;
+                    bottom: 4px;
+                    right: 4px;
+                }
+
+            .datepicker tbody tr > td.day.range {
+                background: #f7f8fa;
+            }
+
+        .datepicker tbody tr > td span.year,
+        .datepicker tbody tr > td span.hour,
+        .datepicker tbody tr > td span.minute,
+        .datepicker tbody tr > td span.month {
+            color: #595d6e;
+        }
+
+            .datepicker tbody tr > td span.year:hover,
+            .datepicker tbody tr > td span.hour:hover,
+            .datepicker tbody tr > td span.minute:hover,
+            .datepicker tbody tr > td span.month:hover {
+                background: #f7f8fa;
+            }
+
+            .datepicker tbody tr > td span.year.focused, .datepicker tbody tr > td span.year.focused:hover, .datepicker tbody tr > td span.year.active:hover, .datepicker tbody tr > td span.year.active.focused:hover, .datepicker tbody tr > td span.year.active,
+            .datepicker tbody tr > td span.hour.focused,
+            .datepicker tbody tr > td span.hour.focused:hover,
+            .datepicker tbody tr > td span.hour.active:hover,
+            .datepicker tbody tr > td span.hour.active.focused:hover,
+            .datepicker tbody tr > td span.hour.active,
+            .datepicker tbody tr > td span.minute.focused,
+            .datepicker tbody tr > td span.minute.focused:hover,
+            .datepicker tbody tr > td span.minute.active:hover,
+            .datepicker tbody tr > td span.minute.active.focused:hover,
+            .datepicker tbody tr > td span.minute.active,
+            .datepicker tbody tr > td span.month.focused,
+            .datepicker tbody tr > td span.month.focused:hover,
+            .datepicker tbody tr > td span.month.active:hover,
+            .datepicker tbody tr > td span.month.active.focused:hover,
+            .datepicker tbody tr > td span.month.active {
+                background: #5867dd;
+                color: #ffffff;
+            }
+
+        .datepicker tfoot tr > th.today, .datepicker tfoot tr > th.clear {
+            border-radius: 3px;
+            font-weight: 500;
+        }
+
+            .datepicker tfoot tr > th.today:hover, .datepicker tfoot tr > th.clear:hover {
+                background: #ebedf2;
+            }
+
+        .datepicker.datepicker-inline {
+            border: 1px solid #ebedf2;
+        }
+
+    .toggle-event {
+        pointer-events: none;
+    }
+
+    .select2-container .select2-selection--single {
+        height: 32px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 32px !important;
+    }
+
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        top: 3px !important;
+    }
+
+    .score-hide-column {
+        display: none;
+    }
+</style>
+
+<div class="home">
+    <div class="filter-par">
+        @Html.Partial("_FilterSelection")
+        @Html.Partial("_TopDateFilter")
+        @Html.Partial("_Filter")
+    </div>
+    <div class="intro">
+        <div class="chartCon">
+            <div style="">
+                <div class="tabParent">
+                    @if (Model != null)
+                    {
+                        foreach (var Year in Model.lstYear)
+                        {
+                            if (ViewBag.UserRoleID == (int)GlobalVariable.UserRole.SuperUser)
+                            {
+                                <div class="tab year-tab@(Year.Year == Model.YearCurrent.ToString() ? " tab-selected" : "") " data-tab-id="1" data-year="@Year.Year">
+                                    @Year.Year-@((Convert.ToInt32(Year.Year) + 1).ToString().Substring(2))
+                                </div>
+
+                                if (Year.HasFreezeData)
+                                {
+                                    <div class="tab year-tab freezedTab" data-tab-id="1" data-year="@Year.Year">
+                                        @Year.Year-@((Convert.ToInt32(Year.Year) + 1).ToString().Substring(2)) @(ViewBag.UserRoleID == (int)GlobalVariable.UserRole.SuperUser ? "Frozen" : "")
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                if (Year.HasFreezeData)
+                                {
+                                    <div class="tab year-tab freezedTab" data-tab-id="1" data-year="@Year.Year">
+                                        @Year.Year-@((Convert.ToInt32(Year.Year) + 1).ToString().Substring(2)) @(ViewBag.UserRoleID == (int)GlobalVariable.UserRole.SuperUser ? "Frozen" : "")
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="tab year-tab@(Year.Year == Model.YearCurrent.ToString() ? " tab-selected" : "") " data-tab-id="1" data-year="@Year.Year">
+                                        @Year.Year-@((Convert.ToInt32(Year.Year) + 1).ToString().Substring(2))
+                                    </div>
+                                }
+                            }
+                        }
+                    }
+                    <div class="tab" data-tab-id="2">
+                        Bonus Grid
+                    </div>
+                    @if (ViewBag.UserRoleID == (int)GlobalVariable.UserRole.SuperUser)
+                    {
+                        <div class="tab" data-tab-id="3">
+                            History
+                        </div>
+                    }
+                </div>
+                <div style="background:#fff; padding: 0 10px;">
+                    <div id="divCompensationGrid" class="CompensationGrid">
+                        @{
+                            int currentYear = Model.YearCurrent;
+                            int nextYear = currentYear + 1;
+                            var lstCounselCompensationPlanning = Model.lstCounselCompensationPlanning as List<CounselCompensationPlanningModel>;
+                            List<Compensation_Extra_Column> lstExtraColumn = Model.lstCompensation_Extra_Column as List<Compensation_Extra_Column>;
+                            //here 2 coumns are Total Bonus, Hours Bonus,Collections over $500K and Billable Hours over 2,000
+                            var ColSpanBonus = Model.lstCompensation_Extra_Column != null ? Model.lstCompensation_Extra_Column.Count + 4 : 4;
+                            //For Hours Bonus
+                            if (currentYear >= 2024)
+                            {
+                                ColSpanBonus = ColSpanBonus + 1;
+                            }
+                            var colSpanNextYear = 3 + 1;
+                            //Here 1 for paid bonus hours
+                            var colSpanCurrentYear = 22 + ColSpanBonus + 1;
+                            //Added by Narpat
+                            //on 12-09-2024
+                            //Hide YE Score and Mid Year Score column
+                            //23-2 Hide 2 Column Mid Year Score and YE Score
+                            var yeScoreMidYearScoreColumnHide = "score-hide-column";
+
+                            //var colSpanCurrentYear = 23-2 Hide 2 Column Mid Year Score and YE Score
+                            //here 2 column subtracting are Collections over $500K and Billable Hours over 2,000
+                            //because they are not part of bonus but part of current year
+                            ColSpanBonus = ColSpanBonus - 2;
+                            //here four columns are hours bonus, collection over 500k, billable hour over 2,000 and Sub-Total
+                            var colspanOther = lstExtraColumn != null ? lstExtraColumn.Where(a => a.ColSequence > 5).Count() + 2 : 2;
+                            //here on is subtracted because hours bonus over 1,600 exist over 2023
+                            if (currentYear <= 2023)
+                            {
+                                colspanOther = colspanOther - 1;
+                            }
+                            <input type="hidden" value="false" class="hdnIsYearEnd">
+                            <table id="tblCounselCompensationPlanning" class="table table-bordered tblCompensation tblCompensationCommon tbl-row-shading" style="background: #fff; margin-bottom: 0px; box-shadow: 0px 0px 0px 0.6px #ddd; border-collapse: separate;width:1800px">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="5" class="positionSticky" style="min-width: 180px; z-index: 2; vertical-align: middle;">
+                                            Name
+                                        </th>
+                                        <th rowspan="5" style="min-width: 180px; vertical-align: middle;">Practice Group</th>
+                                        <th rowspan="5" style="min-width: 180px; vertical-align: middle;">Office</th>
+                                        <th rowspan="5" class="t-a-r" style="vertical-align: middle;">JD Year</th>
+                                        <th rowspan="5" class="t-a-r" style="vertical-align: middle;">Hire Date</th>
+                                        <th colspan=@colSpanCurrentYear data-colspan-freeze=@colSpanCurrentYear class="t-a-c currentYearHeaderMain colcurrent-year headerWithColSpan" style="z-index:1" data-column="@currentYear">@currentYear</th>
+                                        <th colspan=@colSpanNextYear class="t-a-c colnext-year headerWithColSpan" style="z-index:1" data-column="@nextYear">@nextYear</th>
+                                        <th rowspan="5" class="t-a-c" style="z-index: 1; vertical-align: middle;">PG Chair Comments</th>
+                                    </tr>
+                                    <tr>
+                                        <th rowspan="4" class="t-a-r colcurrent-year @currentYear" style="padding-right: 15px; vertical-align: middle;">Bonus Eligible FTE</th>
+                                        <th rowspan="4" class="t-a-r colcurrent-year @currentYear" style="padding-right: 15px; vertical-align: middle;">Axinn Class Year</th>
+                                        <th colspan="4" rowspan="2" class="t-a-c colcurrent-year sal-header headerWithColSpan @currentYear" data-column="Salary">Salary</th>
+                                        <th rowspan="4" class="t-a-r colcurrent-year @currentYear @yeScoreMidYearScoreColumnHide" style="padding-right: 15px; vertical-align: middle;">Mid Year Score</th>
+                                        <th rowspan="4" class="t-a-r colcurrent-year @currentYear" style="padding-right: 15px; vertical-align: middle;">YE Score</th>
+                                        <th rowspan="4" class="t-a-r colcurrent-year @currentYear" style="padding-right: 15px; vertical-align: middle;">Non Billable</th>
+                                        <th colspan="8" rowspan="2" class="t-a-c colasped thBillableCredit colcurrent-year headerWithColSpan @currentYear" data-column="BillableCredit">Billable Credit <i class="fa fa-up-right-and-down-left-from-center" aria-hidden="true"></i></th>
+                                        <th rowspan="4" class="thBillableCreditExpend colcurrent-year @currentYear" style="text-align: right; min-width: 100px; vertical-align: middle; padding-right: 25px;">
+                                            <div style="display:flex;">
+                                                <div style="margin-right: 10px;" class="thBillableCreditExpendText">
+                                                    Billable Credit
+                                                </div>
+                                                <div style="margin-top: 10px;">
+                                                    <i class="fa fa-up-right-and-down-left-from-center colexpend" aria-hidden="true"></i>
+                                                </div>
+                                            </div>
+                                        </th>
+                                        <th rowspan="4" class="t-a-r colcurrent-year @currentYear" style="padding-right: 15px;vertical-align: middle;">Annualized Hours</th>
+                                        <th rowspan="4" class="t-a-r colcurrent-year @currentYear" style="padding-right: 15px;vertical-align: middle;">Hrs Adjustment</th>
+                                        <th rowspan="4" class="t-a-r colcurrent-year @currentYear" style="padding-right: 15px;vertical-align: middle;">Adjusted Hrs</th>
+                                        <th rowspan="4" class="t-a-r colcurrent-year @currentYear" style="padding-right: 15px;vertical-align: middle;">Adjusted Hrs Comments</th>
+                                        <th colspan="2" rowspan="3" class="t-a-c colcurrent-year headerWithColSpan @currentYear" data-column="BonusDiscretionaryBonus">Discretionary Bonus (Dec-Nov)</th>
+                                        <th colspan=@ColSpanBonus class="t-a-c colcurrent-year bonus-header headerWithColSpan @currentYear" data-column="Bonus">Bonus</th>
+                                        <th rowspan="4" class="t-a-r colcurrent-year @currentYear" style="padding-right: 15px; vertical-align: middle;">Total Compensation</th>
+                                        <th rowspan="4" class="t-a-r colcurrent-year @currentYear" style="padding-right: 15px; vertical-align: middle;">Paid Bonus Hours</th>
+                                        <th rowspan="4" class="t-a-r colnext-year @nextYear" style="padding-right: 15px;vertical-align: middle;">Axinn Role</th>
+                                        <th rowspan="4" class="t-a-r colnext-year @nextYear" style="padding-right: 15px;vertical-align: middle;">FTE</th>
+                                        <th rowspan="4" class="t-a-r colnext-year @nextYear" style="padding-right: 15px;vertical-align: middle;">Compensation</th>
+                                        <th rowspan="4" class="t-a-r colnext-year @nextYear" style="padding-right: 15px;vertical-align: middle;">Budget Salary</th>
+                                    </tr>
+                                    <tr>
+                                        @*Here 3 subtracting for Total Bonus*@
+                                        <th class="t-a-c colcurrent-year headerWithColSpan Bonus" data-column="BonusYearEnd" colspan="@(ColSpanBonus-colspanOther-1)">Year End</th>
+                                        <th colspan="@colspanOther" class="t-a-c colcurrent-year headerWithColSpan Bonus" data-column="OtherBonusYearEnd">Other</th>
+                                        <th rowspan="3" class="t-a-r colcurrent-year Bonus" style="vertical-align:middle;padding-right:15px;">Total Bonus</th>
+                                    </tr>
+                                    <tr>
+                                        <th rowspan="2" class="t-a-r colcurrent-year Salary" style="padding-right: 25px; vertical-align: middle;">Starting (Annual)</th>
+                                        <th colspan="2" class="t-a-c colcurrent-year headerWithColSpan Salary" data-column="SalaryIncrease">Increase(s)</th>
+                                        <th rowspan="2" class="t-a-r colcurrent-year Salary" style="padding-right: 25px; vertical-align: middle;">Current (Annual)</th>
+                                        <th rowspan="2" class="t-a-r thBillableCredit colcurrent-year BillableCredit" style="min-width: 100px; padding-right: 15px; vertical-align: middle;">Billable Hours (Dec-@ViewBag.EndMonth)</th>
+                                        <th colspan="6" class="t-a-c colasped thBillableCredit colcurrent-year headerWithColSpan BillableCredit" data-column="BillableCreditNonBillableCreditable">Non Billable Creditable</th>
+                                        <th rowspan="2" class="t-a-r thBillableCredit colcurrent-year BillableCredit" style="min-width: 100px; padding-right: 15px; vertical-align: middle;">Billable Credit</th>
+                                        @if (lstExtraColumn != null)
+                                        {
+                                            List<Compensation_Extra_Column> lstExtraColumnWithoutDiscretionary = lstExtraColumn.Where(a => a.ColumnName != "Discretionary Bonus if Collections over $500K (Dec-Nov)" && a.ColumnName != "Discretionary Bonus if Billables over 2,000  (Dec-Nov)" && a.ColSequence <= 5).ToList();
+                                            foreach (Compensation_Extra_Column objCEC in lstExtraColumnWithoutDiscretionary)
+                                            {
+                                                var dataOrderable = "";
+                                                var width = "100px";
+                                                var classSet = "t-a-r colcurrent-year";
+                                                if (objCEC.ColumnName == "Assoc Referral program")
+                                                {
+                                                    dataOrderable = "data-orderable = false";
+                                                    width = "110px";
+                                                }
+                                                else if (objCEC.ColumnName == "Adjustment")
+                                                {
+                                                    dataOrderable = "data-orderable = false";
+                                                    classSet = "t-a-l";
+                                                }
+                                                else if (objCEC.ColumnName == "Adjustment Comments")
+                                                {
+                                                    dataOrderable = "data-orderable = true";
+                                                    classSet = "t-a-l";
+                                                }
+
+                                                var ShowHide = (objCEC.RoleID == 1 ? ("display: block;") : ("display: none;"));
+
+                                                if (objCEC.Name == "Special Bonus")
+                                                {
+                                                    <th rowspan="2" data-orderable="true" class="colcomp-ext-col colcurrent-year SpecialBonus Bonus BonusYearEnd" data-isYearEnd="1" style="text-align: right; vertical-align: middle;min-width:125px !important;">
+                                                        <div>
+                                                            @objCEC.Name
+                                                            <div style="float:right;@ShowHide" class="AddNewColumn">
+                                                                <i class="fa fa-plus save" aria-hidden="true" style="padding-left:10px;"></i>
+                                                            </div>
+                                                        </div>
+                                                    </th>
+                                                }
+                                                else if (objCEC.IsAddColumn == true && objCEC.ColSequence <= 5)
+                                                {
+                                                    <th rowspan="2" data-orderable="true" class="colcomp-ext-col colcurrent-year Bonus BonusYearEnd" style="text-align: right;vertical-align:middle;">
+                                                        @objCEC.Name
+                                                        <div style="float:right;@ShowHide">
+                                                            <i class="fa fa-edit EditColumn" data-id="@objCEC.ID" data-attr="@objCEC.Name" data-datatype="@objCEC.DataType" aria-hidden="true" style="padding-left:10px;"></i>
+                                                        </div>
+                                                    </th>
+                                                }
+                                                else if (objCEC.ColumnName == "Bonuses")
+                                                {
+                                                    <th rowspan="2" class="t-a-r colcomp-ext-col colcurrent-year Bonus">Bonuses</th>
+                                                }
+                                                else if (objCEC.Name == "Adjustment")
+                                                {
+                                                    <th rowspan="2" class="t-a-r colcurrent-year Bonus BonusYearEnd" style=" min-width: 113px !important; padding-right:17px; vertical-align: middle;z-index:1" @dataOrderable data-id="@objCEC.ID">@objCEC.Name</th>
+                                                }
+                                                else
+                                                {
+                                                    <th rowspan="2" class="@classSet colcurrent-year Bonus BonusYearEnd" style=" min-width: @width; padding-right: 25px; vertical-align: middle;z-index:1" @dataOrderable data-id="@objCEC.ID">@objCEC.Name</th>
+                                                }
+                                            }
+                                        }
+                                        <th rowspan="2" class="t-a-r colcurrent-year Bonus BonusYearEnd" style="padding-right: 15px; vertical-align: middle;">Time Entry Penalty</th>
+                                        <th rowspan="2" class="t-a-r colcurrent-year Bonus BonusYearEnd" style="padding-right: 15px; vertical-align: middle;">Total YE Bonus</th>
+                                        @{
+                                            //For Hours Bonus
+                                            if (currentYear >= 2024)
+                                            {
+                                                var ShowHide = (lstExtraColumn != null && lstExtraColumn.Where(a => a.RoleID == 1).Count() > 0 ? ("display: block;") : ("display: none;"));
+                                                <th rowspan="2" class="t-a-c colcurrent-year Bonus OtherBonusYearEnd" data-isYearEnd="0" style="vertical-align:middle">
+                                                    Hours Bonus over 1,600
+                                                    <div style="float:right;@ShowHide" class="AddNewColumn">
+                                                        <i class="fa fa-plus save" aria-hidden="true" style="padding-left:10px;"></i>
+                                                    </div>
+                                                </th>
+                                            }
+                                        }
+                                        @if (lstExtraColumn != null)
+                                        {
+                                            //for other type bonus, extra column from 6 to 10 are reserved
+                                            foreach (Compensation_Extra_Column objCEC in lstExtraColumn.Where(a => a.ColSequence >= 6 && a.IsAddColumn == true))
+                                            {
+                                                var ShowHide = (objCEC.RoleID == 1 ? ("display: block;") : ("display: none;"));
+                                                <th rowspan="2" data-orderable="true" class="colcomp-ext-col colcurrent-year Bonus OtherBonusYearEnd" style="text-align: right;vertical-align:middle;">
+                                                    @objCEC.Name
+                                                    <div style="float:right;@ShowHide">
+                                                        <i class="fa fa-edit EditColumn" data-id="@objCEC.ID" data-attr="@objCEC.Name" data-datatype="@objCEC.DataType" aria-hidden="true" style="padding-left:10px;"></i>
+                                                    </div>
+                                                </th>
+                                            }
+                                        }
+                                        <th rowspan="2" class="t-a-c colcurrent-year Bonus OtherBonusYearEnd" style="vertical-align:middle">Sub-Total</th>
+                                    </tr>
+                                    <tr>
+                                        <th class="t-a-r colcurrent-year SalaryIncrease" data-orderable="false" style="padding-right: 15px; min-width: 100px;vertical-align: middle;">$</th>
+                                        <th class="t-a-r colcurrent-year SalaryIncrease" data-orderable="false" style="padding-right: 15px; min-width: 100px;vertical-align: middle;">Effective date</th>
+                                        <th class="t-a-r thBillableCredit colcurrent-year BillableCreditNonBillableCreditable" style="min-width: 100px; vertical-align: middle;padding-right: 15px;">Pro Bono</th>
+                                        <th class="t-a-r thBillableCredit colcurrent-year BillableCreditNonBillableCreditable" style="min-width: 100px; vertical-align: middle;padding-right: 15px;">DEI</th>
+                                        <th class="t-a-r thBillableCredit colcurrent-year BillableCreditNonBillableCreditable" style="min-width: 100px; vertical-align: middle;padding-right: 15px;">General Counsel</th>
+                                        <th class="t-a-r thBillableCredit colcurrent-year BillableCreditNonBillableCreditable" style="min-width: 100px; vertical-align: middle;padding-right: 15px;">NB Travel </th>
+                                        <th class="t-a-r thBillableCredit colcurrent-year BillableCreditNonBillableCreditable" style="min-width: 100px; vertical-align: middle;padding-right: 15px;">Investment</th>
+                                        <th class="t-a-r thBillableCredit colcurrent-year BillableCreditNonBillableCreditableSubTotal BillableCreditNonBillableCreditable" style="min-width: 100px; vertical-align: middle;padding-right: 15px;">
+                                            <div class="FC" style="margin-left:12px;">
+                                                Sub Total <i class="fa fa-info-circle" style="margin-left: 5px;" data-placement="right" data-toggle="tooltip" title="upto 100 Pro Bono + upto 50 DEI + upto 50 Investment (Max 150) + General Counsel + NB Travel" aria-hidden="true"></i>
+                                            </div>
+                                        </th>
+                                        <th class="t-a-l colcurrent-year BonusDiscretionaryBonus" style="min-width: 170px;vertical-align: middle;" data-orderable=false>Collections over $500K</th>
+                                        <th class="t-a-l colcurrent-year BonusDiscretionaryBonus" style="min-width: 170px;vertical-align: middle;" data-orderable=false>Billable Hours over 2,000</th>
+                                    </tr>
+                                </thead>
+                                <thead>
+                                    <tr>
+                                        <th class="t-a-l positionSticky" style="vertical-align: middle;z-index:3;">Total</th>
+                                        <th style="vertical-align: middle;"></th>
+                                        <th style="vertical-align: middle;"></th>
+                                        <th style="text-align: right; vertical-align: middle;"></th>
+                                        <th style="text-align:right;vertical-align:middle;"> </th>
+                                        <th class="currentYearFTE colcurrent-year" style="text-align: right; vertical-align: middle; padding-right: 8px;"></th>
+                                        @*2022 Class Year*@
+                                        <th class="colcurrent-year" style="text-align: right; vertical-align: middle;"></th>
+                                        <th class="CurrentYearAnnualComp colcurrent-year" style="text-align: right; vertical-align: middle; padding-right: 8px;"></th>
+                                        @*2022 Salary inc*@
+                                        <th class="salaryInc colcurrent-year" style="text-align: right; vertical-align: middle; padding-right: 8px;"></th>
+                                        @*Effective Date of 2022 inc*@
+                                        <th class="colcurrent-year" style="text-align: right; vertical-align: middle; padding: 0px"></th>
+                                        <th class="AnnualSalary colcurrent-year" style="text-align: right; vertical-align: middle; padding-right: 8px;"></th>
+                                        <th class="sort-input colcurrent-year @yeScoreMidYearScoreColumnHide" style="text-align:right;vertical-align:middle;"></th>
+                                        <th class="colcurrent-year" style="text-align:right; vertical-align: middle;z-index:2;"></th>
+                                        <th class="t-a-r NonBillable colcurrent-year" style="vertical-align: middle; padding-right: 8px;"></th>
+                                        <th class="t-a-r thBillableCredit YTDBillableHours colcurrent-year" style="vertical-align: middle; padding-right: 8px;"></th>
+                                        <th class="t-a-r thBillableCredit ProBono colcurrent-year" style="vertical-align: middle; padding-right: 8px;"></th>
+                                        <th class="t-a-r thBillableCredit DEI colcurrent-year" style="vertical-align: middle; padding-right: 8px;"></th>
+                                        <th class="t-a-r thBillableCredit GeneralCounsel colcurrent-year" style="vertical-align: middle; padding-right: 8px;"></th>
+                                        <th class="t-a-r thBillableCredit TravelHours colcurrent-year" style="vertical-align: middle; padding-right: 8px;"></th>
+                                        <th class="t-a-r thBillableCredit ProfessionalDeveloment colcurrent-year" style="vertical-align: middle; padding-right: 8px;"></th>
+                                        <th class="t-a-r thBillableCredit NonBillableCreditableSubTotal colcurrent-year" style="vertical-align: middle; padding-right: 8px;"></th>
+                                        <th class="t-a-r thBillableCredit BillableCreditCallasped colcurrent-year" style="vertical-align: middle; padding-right: 8px;"></th>
+                                        <th class="t-a-r thBillableCreditExpend BillableCreditExpend colcurrent-year" style="vertical-align: middle; padding-right: 8px;"></th>
+                                        <th class="t-a-r AnnualizedHours colcurrent-year" style="vertical-align: middle; padding-right: 8px;"></th>
+                                        <th class="colcurrent-year"></th>
+                                        <th class="t-a-r AnnualizedHoursAdjusted colcurrent-year" style="top: 172.533px;vertical-align: middle;padding-right: 8px !important;"></th>
+                                        <th class="colcurrent-year"></th>
+                                        <th class="colcurrent-year" style="z-index:2;"></th>
+                                        <th class="colcurrent-year" style="z-index:2;"></th>
+                                        @if (Model.lstCompensation_Extra_Column != null)
+                                        {
+                                            foreach (Compensation_Extra_Column objCEC in Model.lstCompensation_Extra_Column)
+                                            {
+                                                if (objCEC.Name == "Assoc Referral program")
+                                                {
+                                                    <th class="colcurrent-year"></th>
+                                                }
+                                                else if (objCEC.Type == "Year End")
+                                                {
+                                                    <th class="t-a-r @objCEC.ColumnName colcurrent-year" style="vertical-align: middle; padding-right: 8px;"></th>
+                                                }
+                                                else if (objCEC.Name == "Adjustment")
+                                                {
+                                                    <th class="t-a-r sort-input colcurrent-year" style="padding-right: 8px;"></th>
+                                                }
+                                                else if (objCEC.Name == "Adjustment Comments")
+                                                {
+                                                    <th class="colcurrent-year"></th>
+                                                }
+                                                else if (objCEC.Name == "Adjusted YE Bonus")
+                                                {
+                                                    <th class="t-a-r AdjYEBonus colcurrent-year" style="vertical-align: middle; padding-right: 8px; text-align:right;"></th>
+                                                }
+                                                else if (objCEC.Name == "Special Bonus")
+                                                {
+                                                    <th class="t-a-r SpecialBonus sort-input colcurrent-year" style="vertical-align: middle; padding-right: 8px;"></th>
+                                                }
+                                                else if (objCEC.IsAddColumn == true && objCEC.ColSequence <= 5)
+                                                {
+                                                    <th class="sort-input t-a-r @objCEC.ColumnName colcurrent-year" style="padding-right: 8px;"></th>
+                                                }
+                                                else if (objCEC.Name == "Sub-Total")
+                                                {
+                                                    <th class="t-a-r AxinnsubTotal colcurrent-year" style="vertical-align: middle; padding-right: 8px;"></th>
+                                                }
+                                            }
+                                        }
+                                        <th class="t-a-r timeEntryPenalty colcurrent-year" style="vertical-align: middle; padding-right: 8px;"></th>
+                                        <th class="t-a-r deductedbonus colcurrent-year" style="vertical-align: middle; padding-right: 8px;"></th>
+                                        @{
+                                            //For Hours Bonus
+                                            if (currentYear >= 2024)
+                                            {
+                                                <th class="t-a-r HoursBonus colcurrent-year" style="padding-right: 8px;"></th>
+                                            }
+                                        }
+                                        @if (lstExtraColumn != null)
+                                        {
+                                            //for other type bonus, extra column from 6 to 10 are reserved
+                                            foreach (Compensation_Extra_Column objCEC in lstExtraColumn.Where(a => a.ColSequence >= 6 && a.IsAddColumn == true))
+                                            {
+                                                <th class="sort-input t-a-r @objCEC.ColumnName colcurrent-year" style="padding-right: 8px;"></th>
+                                            }
+                                        }
+                                        <th class="colcurrent-year bonusOtherSubTotal t-a-r" style="z-index:2;padding-right:8px;"></th>
+                                        <th class="colcurrent-year bonusTotal t-a-r" style="z-index:2;padding-right:8px;"></th>
+                                        <th class="t-a-r Fcompensation colcurrent-year" style="vertical-align: middle; padding-right: 8px;"></th>
+                                        <th class="t-a-r paid-bonus-hours colcurrent-year" style="vertical-align: middle; padding-right: 8px;"></th>
+                                        <th class="colnext-year"></th>
+                                        <th style="vertical-align: middle; padding-right: 8px;" class="t-a-r NextYearFTE sort-input colnext-year"> </th>
+                                        <th style="vertical-align: middle; padding-right: 8px;" class="t-a-r compensation sort-input colnext-year"></th>
+                                        <th style="vertical-align: middle; padding-right: 8px;" class="colnext-year t-a-r budgetSalary"></th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody class="tblCommonBody">
+                                    @{
+                                        if (lstCounselCompensationPlanning != null && lstCounselCompensationPlanning.Count > 0)
+                                        {
+                                            var lstAssociateBonus = Model.lstAssociateBonus as List<Associate_Bonus>;
+                                            //var lstCouncelCompensation = Model.lstAssociateCompensation as List<Associate_Compensation>;
+                                            lstCounselCompensationPlanning = lstCounselCompensationPlanning.OrderBy(m => m.Name).ToList();
+                                            var lstBonusVersionDB = Model.lstBonusVersion as List<int>;
+
+                                            foreach (CounselCompensationPlanningModel objModel in lstCounselCompensationPlanning)
+                                            {
+                                                var NextAxinnYear = objModel.AxinnYrCurrentYear;
+                                                var AdjYEBonus = 0.0M;
+
+                                                var SubTotal = Convert.ToDecimal(0);
+
+                                                decimal HoursBonus = 0.0M;
+                                                if (currentYear >= 2024)
+                                                {
+                                                    if (objModel.BillableHours >= 1600)
+                                                    {
+                                                        HoursBonus = 20000;
+                                                    }
+                                                }
+
+                                                var extraColumnBonusTotal = Convert.ToDecimal(0);
+                                                objModel.CurrentYearAnnualSalary = objModel.lstCompensationSalaryIncrease != null ? objModel.lstCompensationSalaryIncrease[0].StartingCurrentYearAnnualComp : 0;
+
+                                                var NextYearFTE = objModel.NextAxinnRole == "Counsel" ? objModel.NextYearFTE : 0;
+
+                                                NextYearFTE = objModel.IsCustomAdded == true ? 1 : NextYearFTE;
+                                                var OriFTE = NextYearFTE;
+                                                var Compensation = objModel.NextAxinnRole == "Counsel" ? objModel.Compensation : 0;
+
+                                                var disableFTEComp = ((objModel.NextAxinnRole != "Counsel") ? "disabled" : "");
+                                                var disableBonus = (objModel.IsCustomAdded == true ? "disabled" : "");
+
+                                                var lstAssBonus = new List<Associate_Bonus>();
+                                                var lstBonusFilter = lstAssociateBonus.Where(m => m.ClassYear == NextAxinnYear);
+                                                var JDYear = (objModel.LawSchoolGrad > 0 ? objModel.LawSchoolGrad.ToString() : "-");
+                                                var AxinnYrCurrentYear = (objModel.AxinnYrCurrentYear > 0 ? objModel.AxinnYrCurrentYear.ToString() : "-");
+
+                                                if (lstBonusFilter.Count() > 0)
+                                                {
+                                                    lstBonusFilter = lstBonusFilter.OrderBy(m => m.ClassYear);
+                                                }
+                                                else
+                                                {
+                                                    lstBonusFilter = lstAssociateBonus.FindAll(m => m.ClassYear < NextAxinnYear);
+                                                    if (lstBonusFilter.Count() > 0)
+                                                    {
+                                                        lstBonusFilter = lstBonusFilter.OrderByDescending(m => m.ClassYear).ToList();
+                                                        int Year = lstBonusFilter.FirstOrDefault().ClassYear;
+                                                        lstBonusFilter = lstBonusFilter.Where(m => m.ClassYear == Year);
+                                                    }
+                                                    else
+                                                    {
+                                                        lstBonusFilter = lstAssociateBonus.Where(m => m.ClassYear > NextAxinnYear);
+                                                        lstBonusFilter = lstBonusFilter.OrderBy(m => m.ClassYear).ToList();
+                                                        if (lstBonusFilter.Count() > 0)
+                                                        {
+                                                            int Year = lstBonusFilter.FirstOrDefault().ClassYear;
+                                                            lstBonusFilter = lstBonusFilter.Where(m => m.ClassYear == Year);
+                                                        }
+
+                                                    }
+                                                }
+                                                //var objAssBonus = lstBonusFilter.Where(m => objModel.BillableAnnualizedHour >= m.HourFrom && objModel.BillableAnnualizedHour <= m.HourTo);
+                                                // added by RR because decimal value not exist in lstBonusFilter
+                                                objModel.FinalAdjustmentHrs = Convert.ToDecimal(objModel.FinalAdjustmentHrs.ToString("n0"));
+                                                var objAssBonus = lstBonusFilter.Where(m => objModel.FinalAdjustmentHrs >= m.HourFrom && objModel.FinalAdjustmentHrs <= m.HourTo);
+
+                                                lstAssBonus.AddRange(objAssBonus);
+                                                var LastSaticfiedBonus = 0.0M;
+
+                                                if (objModel.lstCompensationSalaryIncrease != null && objModel.lstCompensationSalaryIncrease.Count > 1)
+                                                {
+                                                    for (int i = 1; i < objModel.lstCompensationSalaryIncrease.Count; i++)
+                                                    {
+                                                        objModel.CurrentYearAnnualSalary += objModel.lstCompensationSalaryIncrease[i].SalaryCurrentYearIncrease;
+                                                    }
+                                                }
+                                                <tr data-id="@objModel.ID" class="loopRow tblCommonRow @(objModel.IsNewEmployee == true ? "newRow":"")">
+                                                    <td class="positionSticky t-align empName">
+                                                        <div style="display: flex; align-items: center;">
+                                                            <div style="display: flex; flex-direction: column; flex: 1;">
+                                                                <span class="EmployeeName">@objModel.Name</span>
+                                                                <span class="EmployeeCode hide">@objModel.EmployeeCode.Trim()</span>
+                                                                <input type="hidden" value="false" class="hdnIsUpdated">
+                                                                <span class="positionChangeDetail" style="font-size: 12px;">
+                                                                    @(objModel.IsCustomAdded == true ? (objModel.PositionChangeDate.Year + " " + objModel.AxinnRoleType) : "")
+                                                                </span>
+                                                            </div>
+                                                            @if (objModel.IsNewEmployee == true)
+                                                            {
+                                                                <div style="display: flex; gap: 2px; margin-left: auto;">
+                                                                    <i class="fa fa-edit c-p editNewEmployee" style="padding: 3px;"></i>
+                                                                    <i class="fa fa-trash c-p deleteNewEmployee" style="padding: 3px;"></i>
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </td>
+                                                    <td class="t-a-v td-practice-group">@objModel.PracticeGroup</td>
+                                                    <td class="t-a-v td-office">@objModel.Office</td>
+                                                    <td class="t-a-r td-txtJdYear">@JDYear</td>
+                                                    <td class="t-a-r t-a-v t-HireDate">@(objModel.HireDate != DateTime.MinValue ? objModel.HireDate.ToShortDateString() : "-")</td>
+
+                                                    <td class="t-a-r totalColumn colcurrent-year p-r" data-attr-total-key="currentYearFTE">
+                                                        @(objModel.IsCustomAdded == true ? "-" : (objModel.IsNewEmployee == true ? "-" : objModel.FTE.ToString("n2")))
+                                                        @if (objModel.FTE < 1 && objModel.IsCustomAdded == false)
+                                                        {
+                                                            Html.RenderPartial("_BonusEligibleFTEInfo", objModel.lstEmployeeLeaveDetails, new ViewDataDictionary(ViewData) { { "Year", Model.YearCurrent } });
+                                                        }
+                                                    </td>
+                                                    <td class="t-a-r startingYearAxinClassYear colcurrent-year">@(objModel.IsCustomAdded == true ? "-" : AxinnYrCurrentYear)</td>
+                                                    @*<td class="t-a-r totalColumn colcurrent-year" data-attr-total-key="CurrentYearAnnualComp">@(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash(@objModel.lstCompensationSalaryIncrease[0].StartingCurrentYearAnnualComp.ToString("n0"))) </td>*@
+                                                    <td class="t-a-r totalColumn colcurrent-year" data-attr-total-key="CurrentYearAnnualComp">@(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash(@objModel.lstCompensationSalaryIncrease != null ? objModel.lstCompensationSalaryIncrease[0].StartingCurrentYearAnnualComp.ToString("n0") : "-")) </td>
+                                                    <td class="t-a-r totalColumn colcurrent-year" data-attr-total-key="salaryInc">
+                                                        @if (objModel.lstCompensationSalaryIncrease != null && objModel.lstCompensationSalaryIncrease.Count > 1)
+                                                        {
+                                                            for (int i = 1; i < objModel.lstCompensationSalaryIncrease.Count; i++)
+                                                            {
+                                                                <div class="divSalaryCurrentYearIncrease">@(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash(@objModel.lstCompensationSalaryIncrease[i].SalaryCurrentYearIncrease.ToString("n0")))</div>
+                                                            }
+                                                        }
+                                                    </td>
+                                                    <td class="t-a-r colcurrent-year">
+                                                        @if (objModel.lstCompensationSalaryIncrease != null && objModel.lstCompensationSalaryIncrease.Count > 1)
+                                                        {
+                                                            for (int i = 1; i < objModel.lstCompensationSalaryIncrease.Count; i++)
+                                                            {
+                                                                <div class="divEffectiveDateOfSalaryCurrentYearIncrease">@(objModel.IsCustomAdded == true ? "-" : objModel.lstCompensationSalaryIncrease[i].EffectiveDateOfSalaryCurrentYearIncrease.ToShortDateString())</div>
+                                                            }
+                                                        }
+                                                    </td>
+                                                    <td class="t-a-r AnnualSalary totalColumn colcurrent-year" data-attr-total-key="AnnualSalary">@(objModel.IsCustomAdded == true ? "-" : (objModel.IsNewEmployee == true ? "-" : CommonClass.GetHoursFormattedOrDash(objModel.CurrentYearAnnualSalary.ToString("n0"))))</td>
+                                                    <td class="colcurrent-year @yeScoreMidYearScoreColumnHide" style="text-align:right;vertical-align:middle;">
+                                                        <input type="text" style="text-align:right;width:100%;" class="form-control txtCurrentYearMidYearScore numberwithdecimal" @disableBonus value="@CommonClass.GetHoursFormattedOrDash(objModel.CurrentYearMidYearScore.ToString("n2"))" @(objModel.IsNewEmployee ? "disabled" : "") />
+                                                    </td>
+                                                    <td class="colcurrent-year" style="text-align: right; vertical-align: middle; align-items: center;position:relative">
+                                                        <div style="width:91%;float:left;">
+                                                            <input type="text" style="text-align:right;width:90%;margin-right:10px;" class="form-control numberwithdecimal txtCurrentYearYEScore" @disableBonus value="@(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash(objModel.CurrentYearYEScore.ToString("n2")))" @(objModel.IsNewEmployee ? "disabled" : "") />
+                                                        </div>
+                                                        <div style="width: 9%; float: left; padding-top: 8px;">
+                                                            <i class="fa fa-info-circle performanceScoreShowIcon" style="cursor:pointer"></i>
+                                                            @{
+                                                                <div class="divPerformanceScore">
+                                                                    @if (objModel.lstCompensationPerformanceScore != null && objModel.lstCompensationPerformanceScore.Count > 0 && objModel.IsCustomAdded == false)
+                                                                    {
+                                                                        var distinctPerformanceScoreYear = objModel.lstCompensationPerformanceScore.Select(a => a.Year).Distinct().ToList();
+                                                                        if (distinctPerformanceScoreYear.Count > 0)
+                                                                        {
+                                                                            <table class="table table-bordered dataTable tblPerformanceScore" style="table-layout: fixed;">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th style="width:105px"></th>
+                                                                                        @foreach (var year in distinctPerformanceScoreYear)
+                                                                                        {
+                                                                                            <th style="text-align:right;width:80px">@year</th>
+                                                                                        }
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <td>YE Score</td>
+                                                                                        @foreach (var year in distinctPerformanceScoreYear)
+                                                                                        {
+                                                                                            <td style="text-align:right">
+                                                                                                @CommonClass.GetHoursFormattedOrDash(@objModel.lstCompensationPerformanceScore.Where(a => a.Year == year).Sum(a => a.YearYE).ToString("n2"))
+                                                                                            </td>
+                                                                                        }
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <h4 style="z-index: 22; background: #f4f7fc; margin: 0; padding: 8px; width: 155px; ">No Data Found</h4>
+                                                                    }
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </td>
+                                                    <td class="t-a-r totalColumn colcurrent-year" data-attr-total-key="NonBillable">@(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash(objModel.NonBillable.ToString("n0")))</td>
+
+                                                    <td class="t-a-r tdBillableCreditcallasped totalColumn colcurrent-year" data-attr-total-key="YTDBillableHours">@(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash(objModel.BillableHours.ToString("n0")))</td>
+                                                    <td class="t-a-r tdBillableCreditcallasped totalColumn colcurrent-year" data-attr-total-key="ProBono">@(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash(objModel.ProBono.ToString("n0")))</td>
+                                                    <td class="t-a-r tdBillableCreditcallasped totalColumn colcurrent-year" data-attr-total-key="DEI">@(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash(objModel.DEI.ToString("n0")))</td>
+                                                    <td class="t-a-r tdBillableCreditcallasped totalColumn colcurrent-year" data-attr-total-key="GeneralCounsel">@(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash(objModel.GeneralCounsel.ToString("n0")))</td>
+                                                    <td class="t-a-r tdBillableCreditcallasped totalColumn colcurrent-year" data-attr-total-key="TravelHours">@(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash(objModel.TravelHours.ToString("n0")))</td>
+                                                    <td class="t-a-r tdBillableCreditcallasped totalColumn colcurrent-year" data-attr-total-key="ProfessionalDeveloment">@(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash(objModel.ProfessionalDeveloment.ToString("n0")))</td>
+                                                    <td class="t-a-r tdBillableCreditcallasped totalColumn colcurrent-year" data-attr-total-key="NonBillableCreditableSubTotal">@(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash((objModel.BillableCredit - objModel.BillableHours).ToString("n0")))</td>
+                                                    <td class="t-a-r tdBillableCreditcallasped totalColumn colcurrent-year" data-attr-total-key="BillableCreditCallasped" style="position:relative">
+                                                        @(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash((objModel.BillableCredit).ToString("n0")))
+                                                        @if (objModel.BillableCredit > 0)
+                                                        {
+                                                            if (!objModel.IsCustomAdded)
+                                                            {
+                                                                Html.RenderPartial("_BillableCreditInfo", new ViewDataDictionary(ViewData) { { "BillableHours", objModel.BillableHours }, { "ProBono", objModel.ProBono }, { "DEI", objModel.DEI }, { "GeneralCounsel", objModel.GeneralCounsel }, { "TravelHours", objModel.TravelHours }, { "ProfDevelopment", objModel.ProfessionalDeveloment }, { "FormID", (int)GlobalVariable.CompForm.Counsel } });
+                                                            }
+                                                        }
+                                                    </td>
+
+                                                    <td class="t-a-r tdBillableCreditcallExpend totalColumn colcurrent-year" data-attr-total-key="BillableCreditExpend" style="position:relative">
+                                                        @(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash(objModel.BillableCredit.ToString("n0")))
+                                                        @if (objModel.BillableCredit > 0)
+                                                        {
+                                                            if (!objModel.IsCustomAdded)
+                                                            {
+                                                                if (!objModel.IsCustomAdded) { Html.RenderPartial("_BillableCreditInfo", new ViewDataDictionary(ViewData) { { "BillableHours", objModel.BillableHours }, { "ProBono", objModel.ProBono }, { "DEI", objModel.DEI }, { "GeneralCounsel", objModel.GeneralCounsel }, { "TravelHours", objModel.TravelHours }, { "ProfDevelopment", objModel.ProfessionalDeveloment }, { "FormID", (int)GlobalVariable.CompForm.Counsel } }); }
+                                                            }
+                                                        }
+                                                    </td>
+
+                                                    <td class="t-a-r totalColumn colcurrent-year" data-attr-total-key="AnnualizedHours">@(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash(objModel.annualHour.ToString("n0")))</td>
+
+                                                    <td class="t-a-r colcurrent-year">
+                                                        <div class="toggle-outer">
+                                                            @if (objModel.IsAdjustedHrsPercentage)
+                                                            {
+                                                                <input type="text" style="text-align:right;width:100%;" class="form-control txtAdjustmentHrs" @disableBonus value="@CommonClass.GetHoursFormattedOrDash(objModel.AdjustmentHrs.ToString("n2"))" @(objModel.IsNewEmployee ? "disabled" : "") />
+                                                            }
+                                                            else
+                                                            {
+                                                                <input type="text" style="text-align:right;width:100%;" class="form-control txtAdjustmentHrs" @disableBonus value="@CommonClass.GetHoursFormattedOrDash(objModel.AdjustmentHrs.ToString("n0"))" @(objModel.IsNewEmployee ? "disabled" : "") />
+                                                            }
+                                                            <button class="toggle-btn toggle-amt @(objModel.IsAdjustedHrsPercentage == false ? "active" : "")">#</button>
+                                                            <button class="toggle-btn toggle-per toggle-right @(objModel.IsAdjustedHrsPercentage == true ? "active" : "")">%</button>
+                                                        </div>
+                                                    </td>
+                                                    <td class="t-a-r totalColumn colcurrent-year" data-attr-total-key="AnnualizedHoursAdjusted">@(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash((objModel.FinalAdjustmentHrs).ToString("n0")))</td>
+                                                    <td class="t-a-r colcurrent-year">
+                                                        <textarea class="form-control AdjustmentHrsComments" style="min-width: 200px;" @disableBonus @(objModel.IsNewEmployee ? "disabled" : "")>@objModel.AdjustmentHrsComments</textarea>
+                                                    </td>
+                                                    <td class="colcurrent-year input-toggle" style="text-align: right; vertical-align: middle; align-items: center;position:relative">
+                                                        <div style="width:91%;float:left;">
+                                                            @if (objModel.lstCompensationPerformanceBillColl != null && objModel.lstCompensationPerformanceBillColl.Count > 0 && objModel.IsCustomAdded == false)
+                                                            {
+                                                                @CommonClass.GetHoursFormattedOrDash(@objModel.lstCompensationPerformanceBillColl.Where(a => a.Year == Model.Year).Sum(a => a.FeeCollection).ToString("n0"))
+                                                            }
+                                                            else
+                                                            {
+                                                                <span>-</span>
+                                                            }
+                                                        </div>
+                                                        @if (!objModel.IsNewEmployee && !objModel.IsCustomAdded)
+                                                        {
+                                                            <div style="width: 9%; float: left;">
+                                                                <i class="fa fa-info-circle bonusCollectionsShowIcon" style="cursor:pointer"></i>
+                                                                @{
+                                                                    <div class="divBonusCollections">
+                                                                        @if (objModel.lstCompensationPerformanceBillColl != null && objModel.lstCompensationPerformanceBillColl.Count > 0)
+                                                                        {
+                                                                            var distinctPerformanceBillCollYear = objModel.lstCompensationPerformanceBillColl.Where(a => a.FeeCollection != 0 && (a.Year == Model.Year - 1 || a.Year == Model.Year - 2)).Select(x => x.Year).Distinct().ToList();
+                                                                            if (distinctPerformanceBillCollYear.Count > 0)
+                                                                            {
+                                                                                <table class="table table-bordered dataTable tblBonusCollections" style="table-layout: fixed;">
+                                                                                    <thead>
+                                                                                        <tr>
+                                                                                            <th style="width:90px"></th>
+                                                                                            @foreach (var year in distinctPerformanceBillCollYear)
+                                                                                            {
+                                                                                                <th style="text-align:right;width:80px;padding-right:5px;">@year</th>
+                                                                                            }
+                                                                                        </tr>
+                                                                                    </thead>
+                                                                                    <tbody>
+                                                                                        <tr>
+                                                                                            <td>Fee Collections</td>
+                                                                                            @foreach (var year in distinctPerformanceBillCollYear)
+                                                                                            {
+                                                                                                <td style="text-align:right">
+                                                                                                    @CommonClass.GetHoursFormattedOrDash(@objModel.lstCompensationPerformanceBillColl.Where(a => a.Year == year).Sum(a => a.FeeCollection).ToString("n0"))
+                                                                                                </td>
+                                                                                            }
+                                                                                        </tr>
+                                                                                    </tbody>
+                                                                                </table>
+                                                                            }
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <h4 style="z-index: 22; background: #f4f7fc; margin: 0; padding: 8px; width: 155px; ">No Data Found</h4>
+                                                                        }
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        }
+                                                    </td>
+                                                    <td class="colcurrent-year input-toggle" style="text-align: right; vertical-align: middle; align-items: center;position:relative">
+                                                        <div style="width:91%;float:left;">
+                                                            <select @disableBonus class="form-control ddlDiscretionaryBonusBillables" @(objModel.IsNewEmployee ? "disabled" : "")>
+                                                                <option value="0" selected="@(objModel.DiscretionaryBonusBillables == 0)">
+                                                                    Eligible
+                                                                </option>
+                                                                <option value="1" selected="@(objModel.IsNewEmployee==true || objModel.DiscretionaryBonusBillables == 1 || objModel.IsCustomAdded == true)">
+                                                                    Not Eligible
+                                                                </option>
+                                                                <option value="2" selected="@(objModel.DiscretionaryBonusBillables == 2 && objModel.IsCustomAdded == false)">
+                                                                    Achieved
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                        <div style="width: 9%; float: left; padding-top: 8px;">
+                                                            <i class="fa fa-info-circle billableHrsShowIcon" style="cursor:pointer"></i>
+                                                            @{
+                                                                <div class="divBillableHrs">
+                                                                    @if (objModel.lstCompensationPerformanceBillColl != null && objModel.lstCompensationPerformanceBillColl.Count > 0 && objModel.IsCustomAdded == false)
+                                                                    {
+                                                                        var distinctPerformanceBillCollYear = objModel.lstCompensationPerformanceBillColl.Where(a => a.BillableHours != 0).Select(x => x.Year).Distinct().ToList();
+                                                                        if (distinctPerformanceBillCollYear.Count > 0)
+                                                                        {
+                                                                            <table class="table table-bordered dataTable tblBillableHrs" style="table-layout: fixed;border-right:1px solid;">
+                                                                                <thead>
+                                                                                    <tr>
+                                                                                        <th style="width:80px"></th>
+                                                                                        @foreach (var year in distinctPerformanceBillCollYear)
+                                                                                        {
+                                                                                            <th style="text-align:right;width:80px;padding-right:5px;">@year</th>
+                                                                                        }
+                                                                                    </tr>
+                                                                                </thead>
+                                                                                <tbody>
+                                                                                    <tr>
+                                                                                        <td>Billable Hrs.</td>
+                                                                                        @foreach (var year in distinctPerformanceBillCollYear)
+                                                                                        {
+                                                                                            <td style="text-align:right">
+                                                                                                @CommonClass.GetHoursFormattedOrDash(@objModel.lstCompensationPerformanceBillColl.Where(a => a.Year == year).Sum(a => a.BillableHours).ToString("n0"))
+                                                                                            </td>
+                                                                                        }
+                                                                                    </tr>
+                                                                                </tbody>
+                                                                            </table>
+                                                                        }
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <h4 style="z-index: 22; background: #f4f7fc; margin: 0; padding: 8px; width: 155px; ">No Data Found</h4>
+                                                                    }
+                                                                </div>
+                                                            }
+                                                        </div>
+                                                    </td>
+
+                                                    @if (Model.lstCompensation_Extra_Column != null)
+                                                    {
+                                                        foreach (Compensation_Extra_Column objCEC in Model.lstCompensation_Extra_Column)
+                                                        {
+                                                            if (objCEC.Name == "Assoc Referral program")
+                                                            {
+                                                                <td class="colcurrent-year input-toggle">
+                                                                    <select @disableBonus class="form-control ddlAssocReferralProgram" @(objModel.IsNewEmployee ? "disabled" : "")>
+                                                                        <option value="0" selected="@(objModel.AssocReferralProgram == 0)">
+                                                                            Eligible
+                                                                        </option>
+                                                                        <option value="1" selected="@(objModel.AssocReferralProgram == 1)">
+                                                                            Not Eligible
+                                                                        </option>
+                                                                    </select>
+                                                                </td>
+                                                            }
+                                                            else if (objCEC.Type == "Year End")
+                                                            {
+                                                                var YearEndBonus = 0.0M;
+                                                                var objBonus = lstAssBonus.Where(m => m.Version == objCEC.Version).FirstOrDefault();
+                                                                if (objBonus != null)
+                                                                {
+                                                                    LastSaticfiedBonus = objBonus.Bonus;
+                                                                    YearEndBonus = objBonus.Bonus;
+                                                                }
+                                                                else
+                                                                {
+                                                                    var lstBonusVersion = lstAssociateBonus.Where(m => m.ClassYear == objModel.AxinnYrCurrentYear).Select(m => m.Version).Distinct();
+                                                                    if (lstBonusVersion.Count() != lstBonusVersionDB.Count())
+                                                                    {
+                                                                        YearEndBonus = LastSaticfiedBonus;
+                                                                    }
+                                                                }
+
+                                                                if (objModel.IsAdjusted_YearEnd_Percentage)
+                                                                {
+                                                                    AdjYEBonus = (YearEndBonus * objModel.Adjustment) / 100;
+                                                                }
+                                                                else
+                                                                {
+                                                                    AdjYEBonus = YearEndBonus + objModel.Adjustment;
+                                                                }
+
+                                                                <td class="totalColumn YearEndBonus colcurrent-year" style="text-align:right;vertical-align:middle;" data-attr-total-key="@objCEC.ColumnName">
+                                                                    @(objModel.IsCustomAdded == true ? "-" : @CommonClass.GetHoursFormattedOrDash(@YearEndBonus.ToString("n0")))
+                                                                </td>
+                                                            }
+                                                            else if (objCEC.Name == "Adjustment")
+                                                            {
+                                                                <td class="totalColumn colcurrent-year">
+                                                                    <div class="toggle-outer">
+                                                                        @if (objModel.IsAdjusted_YearEnd_Percentage)
+                                                                        {
+                                                                            <input type="text" style="text-align:right;width:100%;" class="form-control txtAdjustment" @disableBonus value="@(objModel.IsCustomAdded == true ? "-" : @CommonClass.GetHoursFormattedOrDash(objModel.Adjustment.ToString("n2")))" @(objModel.IsNewEmployee ? "disabled" : "") />
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            <input type="text" style="text-align:right;width:100%;" class="form-control txtAdjustment" @disableBonus value="@(objModel.IsCustomAdded == true ? "-" : @CommonClass.GetHoursFormattedOrDash(objModel.Adjustment.ToString("n0")))" @(objModel.IsNewEmployee ? "disabled" : "") />
+                                                                        }
+                                                                        <button class="toggle-btn toggle-amt @(objModel.IsAdjusted_YearEnd_Percentage == false ? "active" : "")">$</button>
+                                                                        <button class="toggle-btn toggle-per toggle-right @(objModel.IsAdjusted_YearEnd_Percentage == true ? "active" : "")">%</button>
+                                                                    </div>
+                                                                </td>
+                                                            }
+                                                            else if (objCEC.Name == "Adjustment Comments")
+                                                            {
+                                                                <td class="colcurrent-year">
+                                                                    <textarea class="form-control txtAdjComments" @disableBonus style="min-width: 200px;" @(objModel.IsNewEmployee ? "disabled" : "")>@objModel.AdjustmentComments</textarea>
+                                                                </td>
+                                                            }
+                                                            else if (objCEC.Name == "Adjusted YE Bonus")
+                                                            {
+                                                                <td class="AdjYEBonus totalColumn colcurrent-year" style="text-align:right;vertical-align:middle;" data-attr-total-key="AdjYEBonus">
+                                                                    @(objModel.IsCustomAdded == true ? "-" : @CommonClass.GetHoursFormattedOrDash(AdjYEBonus.ToString("n0")))
+                                                                </td>
+                                                            }
+                                                            else if (objCEC.Name == "Special Bonus")
+                                                            {
+                                                                <td class="totalColumn colcurrent-year" style="text-align:right;vertical-align:middle;" data-attr-total-key="SpecialBonus">
+                                                                    <input type="text" style="text-align:right;width:100%;" @disableBonus class="form-control txtSpecialBonus number" value="@CommonClass.GetHoursFormattedOrDash(objModel.SpecialBonus.ToString("n0"))" @(objModel.IsNewEmployee ? "disabled" : "") />
+                                                                </td>
+                                                            }
+                                                            else if (objCEC.IsAddColumn == true && objCEC.ColSequence <= 5)
+                                                            {
+                                                                if (objCEC.ColumnName == "Column1")
+                                                                {
+                                                                    extraColumnBonusTotal += objModel.Column1;
+                                                                    <td class="t-a-r totalColumn colcurrent-year" data-attr-total-key="@objCEC.ColumnName">
+                                                                        <input type="text" style="text-align:right;width:100%;" @disableBonus class="form-control extracolumn txtColumn1 number" data-attr="@objCEC.DataType" value="@(objModel.IsCustomAdded == true ? "-" : @CommonClass.GetHoursFormattedOrDash(objModel.Column1.ToString("n0")))" @(objModel.IsNewEmployee == true ? "disabled" : "") />
+                                                                    </td>
+                                                                }
+                                                                else if (objCEC.ColumnName == "Column2")
+                                                                {
+                                                                    extraColumnBonusTotal += objModel.Column2;
+                                                                    <td class="t-a-r totalColumn colcurrent-year" data-attr-total-key="@objCEC.ColumnName"><input type="text" style="text-align:right;width:100%;" @disableBonus class="form-control extracolumn txtColumn2 number" data-attr="@objCEC.DataType" value="@(objModel.IsCustomAdded == true ? "-" : @CommonClass.GetHoursFormattedOrDash(objModel.Column2.ToString("n0")))" @(objModel.IsNewEmployee == true ? "disabled" : "") /></td>
+                                                                }
+                                                                else if (objCEC.ColumnName == "Column3")
+                                                                {
+                                                                    extraColumnBonusTotal += objModel.Column3;
+                                                                    <td class="t-a-r totalColumn colcurrent-year" data-attr-total-key="@objCEC.ColumnName"><input type="text" style="text-align:right;width:100%;" @disableBonus class="form-control extracolumn txtColumn3 number" data-attr="@objCEC.DataType" value="@(objModel.IsCustomAdded == true ? "-" : @CommonClass.GetHoursFormattedOrDash(objModel.Column3.ToString("n0")))" @(objModel.IsNewEmployee == true ? "disabled" : "") /></td>
+                                                                }
+                                                                else if (objCEC.ColumnName == "Column4")
+                                                                {
+                                                                    extraColumnBonusTotal += objModel.Column4;
+                                                                    <td class="t-a-r totalColumn colcurrent-year" data-attr-total-key="@objCEC.ColumnName"><input type="text" style="text-align:right;width:100%;" @disableBonus class="form-control extracolumn txtColumn4 number" data-attr="@objCEC.DataType" value="@(objModel.IsCustomAdded == true ? "-" : @CommonClass.GetHoursFormattedOrDash(objModel.Column4.ToString("n0")))" @(objModel.IsNewEmployee == true ? "disabled" : "") /></td>
+                                                                }
+                                                                else if (objCEC.ColumnName == "Column5")
+                                                                {
+                                                                    extraColumnBonusTotal += objModel.Column5;
+                                                                    <td class="t-a-r totalColumn colcurrent-year" data-attr-total-key="@objCEC.ColumnName"><input type="text" style="text-align:right;width:100%;" @disableBonus class="form-control extracolumn txtColumn5 number" data-attr="@objCEC.DataType" value="@(objModel.IsCustomAdded == true ? "-" : @CommonClass.GetHoursFormattedOrDash(objModel.Column5.ToString("n0")))" @(objModel.IsNewEmployee == true ? "disabled" : "") /></td>
+                                                                }
+                                                            }
+                                                            else if (objCEC.Name == "Sub-Total")
+                                                            {
+                                                                SubTotal = Convert.ToDecimal(AdjYEBonus + objModel.SpecialBonus + extraColumnBonusTotal);
+                                                                <td class="t-a-r AxinnsubTotal totalColumn  colcurrent-year" style="vertical-align:middle;" data-attr-total-key="AxinnsubTotal">
+                                                                    @(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash(SubTotal.ToString("n0")))
+                                                                </td>
+                                                            }
+                                                        }
+                                                    }
+                                                    <td class="t-a-r yearpenalty totalColumn colcurrent-year" data-attr-total-key="timeEntryPenalty">@(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash((objModel.YearPenalty * -1).ToString("n0")))</td>
+
+                                                    <td class="t-a-r deductedbonus totalColumn colcurrent-year" data-attr-total-key="deductedbonus">
+                                                        @(objModel.IsCustomAdded == true ? "-" : SubTotal == 0 ? "-" : CommonClass.GetHoursFormattedOrDash((SubTotal - objModel.YearPenalty).ToString("n0")))
+                                                    </td>
+                                                    @{
+                                                        //For Hours Bonus
+                                                        if (currentYear >= 2024)
+                                                        {
+                                                            <td class="t-a-r totalColumn colcurrent-year hourBonus" data-attr-total-key="HoursBonus">@(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash((HoursBonus).ToString("n0")))</td>
+                                                        }
+                                                    }
+                                                    @if (lstExtraColumn != null)
+                                                    {
+                                                        //for other type bonus, extra column from 6 to 10 are reserved
+                                                        foreach (Compensation_Extra_Column objCEC in lstExtraColumn.Where(a => a.ColSequence >= 6 && a.IsAddColumn == true))
+                                                        {
+                                                            if (objCEC.ColumnName == "Column6")
+                                                            {
+                                                                <td class="t-a-r totalColumn colcurrent-year" data-attr-total-key="@objCEC.ColumnName"><input type="text" style="text-align:right;width:100%;" @disableBonus class="form-control extracolumn-other extracolumn txtColumn6 number" data-attr="@objCEC.DataType" value="@(objModel.IsCustomAdded == true ? "-" : @CommonClass.GetHoursFormattedOrDash(objModel.Column6.ToString("n0")))" @(objModel.IsNewEmployee == true ? "disabled" : "") /></td>
+                                                            }
+                                                            else if (objCEC.ColumnName == "Column7")
+                                                            {
+                                                                <td class="t-a-r totalColumn colcurrent-year" data-attr-total-key="@objCEC.ColumnName"><input type="text" style="text-align:right;width:100%;" @disableBonus class="form-control extracolumn-other extracolumn txtColumn7 number" data-attr="@objCEC.DataType" value="@(objModel.IsCustomAdded == true ? "-" : @CommonClass.GetHoursFormattedOrDash(objModel.Column7.ToString("n0")))" @(objModel.IsNewEmployee == true ? "disabled" : "") /></td>
+                                                            }
+                                                            else if (objCEC.ColumnName == "Column8")
+                                                            {
+                                                                <td class="t-a-r totalColumn colcurrent-year" data-attr-total-key="@objCEC.ColumnName"><input type="text" style="text-align:right;width:100%;" @disableBonus class="form-control extracolumn-other extracolumn txtColumn8 number" data-attr="@objCEC.DataType" value="@(objModel.IsCustomAdded == true ? "-" : @CommonClass.GetHoursFormattedOrDash(objModel.Column8.ToString("n0")))" @(objModel.IsNewEmployee == true ? "disabled" : "") /></td>
+                                                            }
+                                                            else if (objCEC.ColumnName == "Column9")
+                                                            {
+                                                                <td class="t-a-r totalColumn colcurrent-year" data-attr-total-key="@objCEC.ColumnName"><input type="text" style="text-align:right;width:100%;" @disableBonus class="form-control extracolumn-other extracolumn txtColumn9 number" data-attr="@objCEC.DataType" value="@(objModel.IsCustomAdded == true ? "-" : @CommonClass.GetHoursFormattedOrDash(objModel.Column9.ToString("n0")))" @(objModel.IsNewEmployee == true ? "disabled" : "") /></td>
+                                                            }
+                                                            else if (objCEC.ColumnName == "Column10")
+                                                            {
+                                                                <td class="t-a-r totalColumn colcurrent-year" data-attr-total-key="@objCEC.ColumnName"><input type="text" style="text-align:right;width:100%;" @disableBonus class="form-control extracolumn-other extracolumn txtColumn10 number" data-attr="@objCEC.DataType" value="@(objModel.IsCustomAdded == true ? "-" : @CommonClass.GetHoursFormattedOrDash(objModel.Column10.ToString("n0")))" @(objModel.IsNewEmployee == true ? "disabled" : "") /></td>
+                                                            }
+                                                        }
+                                                    }
+                                                    <td class="t-a-r totalColumn colcurrent-year bonusOtherSubTotal" data-attr-total-key="bonusOtherSubTotal">
+                                                        @(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash((objModel.BonusOtherExtraAdded + HoursBonus).ToString("n0")))
+                                                    </td>
+                                                    <td class="t-a-r totalColumn colcurrent-year bonusTotal" data-attr-total-key="bonusTotal">@(objModel.IsCustomAdded == true ? "-" : SubTotal == 0 ? CommonClass.GetHoursFormattedOrDash((objModel.BonusOtherExtraAdded + HoursBonus).ToString("n0")) : CommonClass.GetHoursFormattedOrDash((SubTotal - objModel.YearPenalty + objModel.BonusOtherExtraAdded + HoursBonus).ToString("n0")))</td>
+                                                    <td class="t-a-r fcompensation totalColumn colcurrent-year" data-attr-total-key="Fcompensation">
+                                                        @(objModel.IsCustomAdded == true ? "-" : SubTotal == 0 ? CommonClass.GetHoursFormattedOrDash((objModel.CurrentYearAnnualSalary + objModel.BonusOtherExtraAdded + HoursBonus).ToString("n0")) : CommonClass.GetHoursFormattedOrDash(((objModel.CurrentYearAnnualSalary + SubTotal + objModel.BonusOtherExtraAdded + HoursBonus) - objModel.YearPenalty).ToString("n0")))
+                                                    </td>
+                                                    <td class="t-a-r paid-bonus-hours totalColumn colcurrent-year" data-attr-total-key="paid-bonus-hours">
+                                                        @(objModel.IsCustomAdded == true ? "-" : CommonClass.GetHoursFormattedOrDash((objModel.PaidBonusHours).ToString("n0")))
+                                                    </td>
+                                                    <td class="colnext-year">
+                                                        <select class="form-control ddlNextAxinnRole">
+                                                            <option value="Equity Partner" selected="@(objModel.NextAxinnRole == "Equity Partner")">Equity Partner</option>
+                                                            <option value="NonEquity Partner" selected="@(objModel.NextAxinnRole == "NonEquity Partner")">Non-Equity Partner</option>
+                                                            <option value="Counsel" selected="@(objModel.NextAxinnRole == "Counsel")">Counsel</option>
+                                                            <option value="Associate" selected="@(objModel.NextAxinnRole == "Associate")">Associate</option>
+                                                            <option value="InActive" selected="@(objModel.NextAxinnRole == "InActive")">Inactive</option>
+                                                        </select>
+                                                    </td>
+                                                    <td class="t-a-r totalColumn colnext-year tdNextYearFTE" data-attr-total-key="NextYearFTE">
+                                                        <input type="text" class="form-control t-a-r txtNextYearFTE rquired @(NextYearFTE < 0 ?"numberwithNegativeFTEdecimal":"numberwithFTEdecimal")" @disableFTEComp placeholder="" value="@CommonClass.GetHoursFormattedOrDash(NextYearFTE.ToString("n2"))">
+                                                        <div class="dvErrMsgFTE" style="color: red; font-size: 9pt; text-align: left;"></div>
+                                                        <input type="hidden" class="hdnNextYearFTE" value="@OriFTE.ToString("n2")" />
+                                                        <input type="hidden" class="hdnCompensation" value="@objModel.Compensation" />
+                                                    </td>
+                                                    <td style="text-align:right;vertical-align:middle;" class="totalColumn colnext-year" data-attr-total-key="compensation">
+                                                        <input type="text" style="text-align:right;width:100%;" @disableFTEComp class="form-control txtcompensation number" value="@CommonClass.GetHoursFormattedOrDash(Compensation.ToString("n0"))" />
+                                                    </td>
+                                                    <td class="totalColumn t-align colnext-year t-a-r budgetSalary" data-attr-total-key="budgetSalary">
+                                                        @*@{
+                                        decimal calculatedBudgetSalary = 0M;
+                                        if (objModel.YearDays != 0 && objModel.TotalWorkingDays != 0)
+                                        {
+                                        calculatedBudgetSalary += (Compensation/ objModel.YearDays * objModel.TotalWorkingDays);
+                                        }
+                                        }*@
+                                                        @if (objModel.IsNewEmployee == true)
+                                                        {
+                                                            @CommonClass.GetHoursFormattedOrDash((objModel.BudgetSalary).ToString("n0"))
+                                                        }
+                                                        else
+                                                        {
+                                                            @CommonClass.GetHoursFormattedOrDash((Compensation).ToString("n0"))
+                                                        }
+                                                        @*@(objModel.BudgetSalary == 0.00m ? CommonClass.GetHoursFormattedOrDash(Compensation.ToString("n0")) : CommonClass.GetHoursFormattedOrDash(objModel.BudgetSalary.ToString("n0")))*@
+                                                    </td>
+                                                    <td>
+                                                        <textarea class="form-control txtComments" style="min-width: 200px;">@objModel.PGChairComments</textarea>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        }
+
+                        <div class="row">
+                            <div class="col-md-12 save-cncl" style="text-align:center;">
+                                @if (Model != null)
+                                {
+                                    if (Model.Year == DateTime.Now.Year)
+                                    {
+                                        <button type="button" class="btn btn-brand submitCCP">Save</button>
+                                        <button type="reset" class="btn btn-secondary cancelCP" style="margin-left:15px">Cancel</button>
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hide sub-tabs pl-10" style="background:#fff;">
+                        @if (Model != null)
+                        {
+                            foreach (var Year in Model.lstYearBonus)
+                            {
+                                <div class="month-tab@(Year.Year==Model.Year.ToString() ? " mth-selected":"") " data-tab-id="1" data-year="@Year.Year">
+                                    @Year.Year-@((Convert.ToInt32(Year.Year) + 1).ToString().Substring(2))
+                                </div>
+                            }
+                        }
+                        <div id="divBonusGrid"></div>
+                    </div>
+                    <div class="hide" id="divHistoryGrid">
+                        <div class="chartCon">
+                            @{
+                                List<CounselCompensationHistory> lstCounselCompensationHistory = Model.lstCounselCompensationHistory as List<CounselCompensationHistory>;
+
+                            }
+
+                            <table class="table table-bordered" data-stripe-classes="[]" id="tblCounselHistory" style="background:#fff;">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2" class="positionSticky sort sorting t-a-l t-v-a" data-attr-ind="0" style="z-index: 2; min-width: 160px;"></th>
+                                        <th rowspan="2" class="dataColumn sort sorting t-a-r t-v-a" data-attr-ind="1" style="padding-right:25px;min-width:100px;">Hire Date</th>
+                                        <th rowspan="2" class="dataColumn t-a-r t-v-a" data-attr-ind="2" style="padding-right:25px;min-width:100px;">Status Change Date</th>
+                                        <th rowspan="2" class="dataColumn sort sorting t-v-a" data-attr-ind="3" style="padding-right:25px;min-width:100px;">Status Change </th>
+                                        @if (lstCounselCompensationHistory.Count > 0)
+                                        {
+                                            <th class="t-a-c t-v-a" colspan="3">2018</th>
+                                            <th class="t-a-c t-v-a" colspan="3">2019</th>
+                                            <th class="t-a-c t-v-a" colspan="3">2020</th>
+                                            <th class="t-a-c t-v-a" colspan="3">2021</th>
+                                        }
+                                    </tr>
+                                    <tr>
+                                        @if (lstCounselCompensationHistory.Count > 0)
+                                        {
+                                            int index = 4;
+                                            foreach (CounselCompensationHistoryYearDetails obj in lstCounselCompensationHistory[0].lstCounselCompensationHistoryYearDetails)
+                                            {
+                                                <th class="t-a-r t-v-a dataColumn sort sorting" data-attr-ind="@index" style="padding-right:25px;min-width:100px;">Base</th>
+                                                index++;
+                                                <th class="t-a-r t-v-a dataColumn sort sorting" data-attr-ind="@index" style="padding-right:25px;min-width:100px;">Bonuses</th>
+                                                index++;
+                                                <th class="t-a-r t-v-a dataColumn sort sorting" data-attr-ind="@index" style="padding-right:25px;min-width:100px;">Total</th>
+                                                index++;
+                                            }
+                                        }
+                                    </tr>
+                                </thead>
+                                <thead>
+                                    <tr>
+                                        <th class="positionSticky" style="z-index:2;">Total</th>
+                                        <th class=""></th>
+                                        <th class=""></th>
+                                        <th class=""> </th>
+                                        @if (lstCounselCompensationHistory.Count > 0)
+                                        {
+                                            foreach (CounselCompensationHistoryYearDetails obj in lstCounselCompensationHistory[0].lstCounselCompensationHistoryYearDetails)
+                                            {
+                                                <th class="t-a-r t-v-a">@CommonClass.GetHoursFormattedOrDash(lstCounselCompensationHistory.Sum(a => a.lstCounselCompensationHistoryYearDetails.Where(x => x.Year == obj.Year).Sum(b => b.Base)).ToString("n0"))</th>
+                                                <th class="t-a-r t-v-a">@CommonClass.GetHoursFormattedOrDash(lstCounselCompensationHistory.Sum(a => a.lstCounselCompensationHistoryYearDetails.Where(x => x.Year == obj.Year).Sum(b => b.Bonuses)).ToString("n0"))</th>
+                                                <th class="t-a-r t-v-a">@CommonClass.GetHoursFormattedOrDash(lstCounselCompensationHistory.Sum(a => a.lstCounselCompensationHistoryYearDetails.Where(x => x.Year == obj.Year).Sum(b => b.Total)).ToString("n0"))</th>
+                                            }
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody id="ttblCounselHistory">
+                                    @{
+                                        if (lstCounselCompensationHistory.Count > 0)
+                                        {
+                                            var distinctCounselHistoryType = lstCounselCompensationHistory.Select(a => a.Type).Distinct().ToList();
+                                            if (distinctCounselHistoryType.Count > 0)
+                                            {
+                                                int iPartnerRowCount = 1;
+                                                foreach (var type in distinctCounselHistoryType)
+                                                {
+                                                    string sPartnerClass = "partner" + iPartnerRowCount;
+                                                    var lstHistoryData = lstCounselCompensationHistory.Where(a => a.Type == type).ToList();
+                                                    <tr data-row="@sPartnerClass" class="exp-type">
+                                                        <td class="positionSticky t-f-w t-v-a">@type <i class="fa fa-minus exp-type-icon" aria-hidden="true"></i></td>
+                                                        <td></td>
+                                                        <td></td>
+                                                        <td></td>
+
+                                                        @foreach (CounselCompensationHistoryYearDetails obj in lstHistoryData[0].lstCounselCompensationHistoryYearDetails)
+                                                        {
+                                                            <td class="t-a-r t-f-w t-v-a">@CommonClass.GetHoursFormattedOrDash(lstHistoryData.Sum(a => a.lstCounselCompensationHistoryYearDetails.Where(x => x.Year == obj.Year).Sum(b => b.Base)).ToString("n0"))</td>
+                                                            <td class="t-a-r t-f-w t-v-a">@CommonClass.GetHoursFormattedOrDash(lstHistoryData.Sum(a => a.lstCounselCompensationHistoryYearDetails.Where(x => x.Year == obj.Year).Sum(b => b.Bonuses)).ToString("n0"))</td>
+                                                            <td class="t-a-r t-f-w t-v-a">@CommonClass.GetHoursFormattedOrDash(lstHistoryData.Sum(a => a.lstCounselCompensationHistoryYearDetails.Where(x => x.Year == obj.Year).Sum(b => b.Total)).ToString("n0"))</td>
+                                                        }
+
+                                                    </tr>
+
+                                                    foreach (CounselCompensationHistory objModel in lstHistoryData)
+                                                    {
+                                                        var StatusChangeDate = objModel.StatusChangeDate.ToShortDateString() == "1/1/0001" ? "" : objModel.StatusChangeDate.ToShortDateString();
+
+                                                        <tr class="oriAttyRow @sPartnerClass childRow group-2row">
+                                                            <td class="positionSticky group-2row" style="padding-left: 20px;">@objModel.Name</td>
+                                                            <td class="dataColumn t-a-r t-v-a">@(objModel.HireDate.ToShortDateString() == "1/1/1900" ? "-" : objModel.HireDate.ToShortDateString())</td>
+                                                            <td class="dataColumn t-a-r t-v-a">@(objModel.StatusChangeDate.ToShortDateString() == "1/1/1900" ? "-" : objModel.StatusChangeDate.ToShortDateString())</td>
+                                                            <td class="dataColumn t-v-a">@objModel.StatusChange</td>
+                                                            @{
+                                                                foreach (CounselCompensationHistoryYearDetails obj in objModel.lstCounselCompensationHistoryYearDetails)
+                                                                {
+                                                                    <td class="dataColumn t-a-r t-v-a">@CommonClass.GetHoursFormattedOrDash(obj.Base.ToString("n0"))</td>
+                                                                    <td class="dataColumn t-a-r t-v-a">@CommonClass.GetHoursFormattedOrDash(obj.Bonuses.ToString("n0"))</td>
+                                                                    <td class="dataColumn t-a-r t-v-a">@CommonClass.GetHoursFormattedOrDash(obj.Total.ToString("n0"))</td>
+                                                                }
+                                                            }
+                                                        </tr>
+                                                    }
+
+                                                    iPartnerRowCount++;
+                                                }
+                                            }
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div class="CompensationFreezeDetailsWrapper hide" style="background: #fff; padding: 0 10px; position: relative; padding-top: 15px;">
+                    </div>
+                </div>
+            </div>
+
+            @Html.Partial("_PopUpAddColumn")
+        </div>
+    </div>
+</div>
+<input type="hidden" class="hdnCompFormId" id="hdnCompFormID" value="@((int)GlobalVariable.CompForm.Counsel)" />
+<input type="hidden" id="hdnIsFreez" value="@ViewBag.isFreez.ToString()" />
+
+<div id="divExcelImport" style="display:none"></div>
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+<link href="~/Assets/css/select2.min.css" rel="stylesheet" />
+<script src="~/Assets/js/select2.min.js"></script>
+
+<script src="~/Assets/Counsel_Compensation_Planning_Reports.js"></script>
+
+
+
+
